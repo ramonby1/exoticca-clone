@@ -1,7 +1,7 @@
 'use client'
+import Link from "next/link";
 import { Search, MapPin, Calendar, ChevronRight, ChevronLeft, User, Phone, HelpCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { useEffect, useRef, useState } from "react"
 
 function FlashSaleCarousel() {
@@ -332,18 +332,19 @@ export default function Home() {
   <div className="container mx-auto px-4">
     <div className="relative flex items-center justify-center h-16">
       {/* LOGO centrado */}
-      <a
-        href="/"
-        className="absolute left-1/2 -translate-x-1/2 flex items-center"
-        aria-label="Unique Experiences - Home"
-      >
-        <img
-          src="/logo horiz beige.png"              // <-- tu archivo en /public
-          alt="Unique Experiences"
-          className="h-8 md:h-10 object-contain"
-          draggable={false}
-        />
-      </a>
+      <Link
+  href="/"
+  className="absolute left-1/2 -translate-x-1/2 flex items-center"
+  aria-label="Unique Experiences - Home"
+>
+  <img
+    src="/logo-horiz-beige.png"
+    alt="Unique Experiences"
+    className="h-8 md:h-10 object-contain"
+    draggable={false}
+  />
+</Link>
+
 
       {/* Teléfono e iconos a la derecha */}
       <div className="absolute right-0 flex items-center gap-6">
