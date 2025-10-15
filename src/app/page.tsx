@@ -19,7 +19,7 @@ function FlashSaleCarousel() {
     { title: "Spa",                       image: "/spa.jpg" },
     { title: "Wine cellar tour",                    image: "/bodega.jpg" },
     { title: "Yoga",                      image: "/yoga.jpg" },
-    { title: "Divinf",                     image: "/buceo.jpg" },
+    { title: "Diving",                     image: "/buceo.jpg" },
   ]
 
   const trackRef = useRef<HTMLDivElement | null>(null)
@@ -224,6 +224,104 @@ function ThematicCarousel() {
     </section>
   )
 }
+function HotelsCarousel() {
+  const slides = [
+    { title: "Mallorca",        subtitle: "Balearic Islands", image: "/mallorca-ciudad-istock.jpg" },
+    { title: "Ribera del Duero",subtitle: "Castilla y León",  image: "/ribera-del-duero.jpg" },
+    { title: "Gran Canaria",    subtitle: "Canary Islands",   image: "/gran-canaria-arguineguin.jpg" },
+    { title: "Cadaqués-Empordà",subtitle: "Costa Brava",      image: "/costa-brava-cadaques-barquito.jpg" },
+    { title: "Barcelona",       subtitle: "Catalonia",        image: "/barcelona.jpg" },
+  ]
+
+  const trackRef = useRef<HTMLDivElement | null>(null)
+  const [index, setIndex] = useState(0)
+
+  const scrollTo = (i: number) => {
+    const el = trackRef.current
+    if (!el) return
+    const slide = el.children[i] as HTMLElement
+    if (!slide) return
+    const padLeft = parseInt(getComputedStyle(el).paddingLeft.replace("px","") || "0", 10)
+    el.scrollTo({ left: slide.offsetLeft - padLeft, behavior: "smooth" })
+    setIndex(i)
+  }
+
+  const next = () => scrollTo((index + 1) % slides.length)
+  const prev = () => scrollTo((index - 1 + slides.length) % slides.length)
+
+  useEffect(() => {
+    const id = setInterval(next, 5000)
+    return () => clearInterval(id)
+  }, [index])
+
+  useEffect(() => {
+    const el = trackRef.current
+    if (!el) return
+    const handler = () => {
+      const kids = Array.from(el.children) as HTMLElement[]
+      const { scrollLeft } = el
+      let nearest = 0, min = Number.POSITIVE_INFINITY
+      kids.forEach((k, i) => {
+        const diff = Math.abs(k.offsetLeft - scrollLeft)
+        if (diff < min) { min = diff; nearest = i }
+      })
+      setIndex(nearest)
+    }
+    el.addEventListener("scroll", handler, { passive: true })
+    return () => el.removeEventListener("scroll", handler)
+  }, [])
+
+  return (
+    <section className="py-16 bg-[#10152b] text-white">
+      <div className="container mx-auto px-4">
+        <div className="flex items-end justify-between gap-4 mb-6">
+          <h2 className="text-3xl font-bold">Hotels</h2>
+          <div className="hidden md:flex gap-2">
+            <button
+              onClick={prev}
+              className="rounded-full border bg-white hover:bg-gray-100 w-11 h-11 grid place-items-center shadow"
+              aria-label="Previous"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+            <button
+              onClick={next}
+              className="rounded-full border bg-white hover:bg-gray-100 w-11 h-11 grid place-items-center shadow"
+              aria-label="Next"
+            >
+              <ChevronRight className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+
+        <div
+          ref={trackRef}
+          className="flex gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-2 px-1
+                     [-ms-overflow-style:'none'] [scrollbar-width:'none'] [&::-webkit-scrollbar]:hidden"
+        >
+          {slides.map((s, i) => (
+            <article
+              key={i}
+              className="relative snap-start shrink-0 w-[85vw] sm:w-[420px] lg:w-[520px]
+                         h-[560px] rounded-[28px] overflow-hidden shadow-xl cursor-pointer group"
+            >
+              <img
+                src={s.image}
+                alt={s.title}
+                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+              <div className="absolute bottom-6 left-6 right-6 text-white">
+                <h3 className="text-4xl leading-tight font-extrabold drop-shadow-md">{s.title}</h3>
+                <p className="opacity-90 text-lg drop-shadow-sm">{s.subtitle}</p>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
 
 
 export default function Home() {
@@ -233,30 +331,28 @@ export default function Home() {
       <header className="bg-[#10152b] text-white sticky top-0 z-50 shadow-lg">
   <div className="container mx-auto px-4">
     <div className="relative flex items-center justify-center h-16">
-      {/* Logo centrado */}
-      <div className="absolute left-1/2 -translate-x-1/2 text-2xl font-bold tracking-wider lowercase">
-        unique
-      </div>
+      {/* LOGO centrado */}
+      <a
+        href="/"
+        className="absolute left-1/2 -translate-x-1/2 flex items-center"
+        aria-label="Unique Experiences - Home"
+      >
+        <img
+          src="/logo horiz beige.png"              // <-- tu archivo en /public
+          alt="Unique Experiences"
+          className="h-8 md:h-10 object-contain"
+          draggable={false}
+        />
+      </a>
 
-      {/* Teléfono y iconos alineados a la derecha */}
+      {/* Teléfono e iconos a la derecha */}
       <div className="absolute right-0 flex items-center gap-6">
-        <a
-          href="tel:07511356928"
-          className="text-sm hover:text-gray-300 transition-colors flex items-center gap-2"
-        >
-          <Phone className="w-4 h-4" />
-          Book now: 0751 135 6928
-        </a>
-        <button className="hover:text-gray-300 transition-colors">
-          <HelpCircle className="w-5 h-5" />
-        </button>
-        <button className="hover:text-gray-300 transition-colors">
-          <User className="w-5 h-5" />
-        </button>
+        {/* ...lo que ya tenías... */}
       </div>
     </div>
   </div>
 </header>
+
 
 
       {/* Hero Section con video de fondo pantalla completa */}
@@ -315,47 +411,8 @@ export default function Home() {
 
 <FlashSaleCarousel />
 <ThematicCarousel />
-      
-      {/* Hotels Section */}
-      <section className="py-16 bg-[#10152b] text-white py-12">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold mb-2">Hotels
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
-            {[
-              {
-                title: "Hotel 1",
-                location: "Mallorca",
-                image: "/mallorca-ciudad-istock.jpg",
-               
-              },
-              {
-                title: "Hotel 2",
-                location: "Ribera del Duero",
-                image: "/ribera-del-duero.jpg",
-              },
-              {
-                title: "Hotel 3",
-                location: "Gran Canaria",
-                image: "/gran-canaria-arguineguin.jpg",
-              }
-            ].map((tour, i) => (
-              <div key={i} className="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-shadow">
-                <div className="relative h-64">
-                  <img src={tour.image} alt={tour.title} className="w-full h-full object-cover" />
-                </div>
-                <div className="p-6">
-                  <h3 className="text-xl font-bold mb-2">{tour.title}</h3>
-                  <p className="text-gray-600 text-sm mb-4">{tour.location}</p>
-                  <div className="flex items-center gap-2">
-                    <span className="text-gray-400 line-through text-sm">{tour.oldPrice}</span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+<HotelsCarousel />   {/* <-- nuevo */}
+
 
       {/* Where to next Section */}
       <section className="py-16 bg-[#fee6ca]">
